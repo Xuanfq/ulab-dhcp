@@ -1,0 +1,77 @@
+#!/bin/bash
+
+function printUsage() {
+	echo "Usage: $0 <version>"
+    echo ""
+	echo "  <version> is the version of kea "
+    echo "  you want to compile, e.g: 2.6.0"
+	echo ""
+    echo "<version> include:"
+	curl -s https://downloads.isc.org/isc/kea/ | 
+        grep -o "[1-9]\.[0-9]\.[0-9]\+/" | 
+        sed 's|/||' |
+        sort |
+        uniq
+	echo ""
+}
+
+if [ ! "$1" ]; then
+	printUsage
+	exit 1
+fi
+
+KEA_VERSION="kea-$1"
+BASE_PATH=$(cd "$(dirname "$0")"; pwd)
+BUILD_PATH="$BASE_PATH/$KEA_VERSION"
+TARGET_PATH="/ulab/ulab-dhcp/kea"
+
+echo "$KEA_VERSION will be compiled to $TARGET_PATH"
+
+rm -rf $TARGET_PATH && mkdir -p $TARGET_PATH
+
+
+# Download source code
+if [ ! -f "$BASE_PATH/$KEA_VERSION.tar.gz" ]; then
+    URL="https://downloads.isc.org/isc/kea/2.6.0/$KEA_VERSION.tar.gz"
+	echo "Downloading Kea source code: $URL"
+	echo ""
+	if hash curl 2>/dev/null; then
+		(curl "$URL" --silent -o $KEA_VERSION.tar.gz) > /dev/null
+	elif hash wget 2>/dev/null; then
+		(wget "$URL" --quiet -O $KEA_VERSION.tar.gz) > /dev/null
+    else
+		echo "curl and wget not found, please install one of them."
+		exit 1
+	fi
+else
+	echo "Kea source code already downloaded."
+fi
+
+# Extract kea source code
+echo "Extracting file."
+tar xf ./$KEA_VERSION.tar.gz
+
+# Install dependencies
+echo "Installing dependencies."
+sudo apt -y install automake libtool pkg-config build-essential ccache
+sudo apt -y install libboost-dev libboost-system-dev liblog4cplus-dev libssl-dev
+sudo apt -y install flex bison python3 python3-sphinx
+
+# Configure
+echo "Configuring executable."
+
+cd ./$KEA_VERSION
+./configure \
+    --prefix="$BUILD_PATH" \
+    # --with-pgsql \
+    --with-mysql
+
+# Build
+echo "Building executable."
+make -j$(nproc)
+
+echo "ulab-dhcp:$KEA_VERSION" > $TARGET_PATH/version
+
+echo "Target path: $TARGET_PATH/"
+
+echo "Done."
