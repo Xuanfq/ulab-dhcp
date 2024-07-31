@@ -1,29 +1,35 @@
 #!/bin/bash
 
 function printUsage() {
-	echo "Usage: $0 <version>"
+	echo "Usage: $0 <version> [target]"
     echo ""
 	echo "  <version> is the version of kea "
     echo "  you want to compile, e.g: 2.6.0"
 	echo ""
+	echo "  [target] is the path of kea "
+    echo "  you want to install, default is /ulab/ulab-dhcp/kea"
+	echo ""
     echo "<version> include:"
 	curl -s https://downloads.isc.org/isc/kea/ | 
-        grep -o "[1-9]\.[0-9]\.[0-9]\+/" | 
+        grep -o "[1-9]\+\.[0-9]\+\.[0-9]\+/" | 
         sed 's|/||' |
         sort |
         uniq
 	echo ""
 }
 
+KEA_VERSION="kea-$1"
+BASE_PATH=$(cd "$(dirname "$0")"; pwd)
+TARGET_PATH="/ulab/ulab-dhcp/kea"
+
 if [ ! "$1" ]; then
 	printUsage
 	exit 1
 fi
 
-KEA_VERSION="kea-$1"
-BASE_PATH=$(cd "$(dirname "$0")"; pwd)
-BUILD_PATH="$BASE_PATH/$KEA_VERSION"
-TARGET_PATH="/ulab/ulab-dhcp/kea"
+if [ "$2" ]; then
+	TARGET_PATH=$2
+fi
 
 echo "$KEA_VERSION will be compiled to $TARGET_PATH"
 
@@ -62,13 +68,16 @@ echo "Configuring executable."
 
 cd ./$KEA_VERSION
 ./configure \
-    --prefix="$BUILD_PATH" \
-    # --with-pgsql \
+    --prefix="$TARGET_PATH" \
     --with-mysql
 
 # Build
 echo "Building executable."
 make -j$(nproc)
+
+# Install
+echo "Installing executable."
+sudo make install
 
 echo "ulab-dhcp:$KEA_VERSION" > $TARGET_PATH/version
 

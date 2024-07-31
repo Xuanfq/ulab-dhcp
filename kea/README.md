@@ -72,6 +72,7 @@ sudo dpkg -i *
 
 ```bash
 cd source
-./compile 2.6.0
+# sudo ./compile <version> [target]
+sudo ./compile 2.6.0 /ulab/ulab-dhcp/kea/
 ```
 
