@@ -111,6 +111,12 @@ Auto start Stork Server after boot:
 sudo systemctl enable isc-stork-server
 ```
 
+### Access Stork Server
+
+http://ServerIP:8080
+
+username/password: admin/admin
+
 ## Stork Agent Install & Setup
 
 [Install Stork Agent](https://stork.readthedocs.io/en/latest/install.html#installation-prerequisites)
@@ -153,4 +159,14 @@ Start Stork Agent:
 sudo systemctl restart isc-stork-agent
 ```
 
+### Register to Stork Server
+
+```bash
+stork-agent register -u http://192.168.4.10:8080
+>>>> Server access token (optional): # This item provides a token for the server, no input, enter directly
+>>>> IP address or FQDN of the host with Stork Agent (for the Stork Server connection) [zhou-virtual-machine]: 192.168.4.10  # This is the IP address of the agent server. Currently, agent_ip is the same as serverless
+>>>> Port number that Stork Agent will listen on [8080]: 8081   # Agent process port (default 8080 not filled in)
+```
+
+*After registering, need to access **Stork Server Web** to to **approve** Stork Agent's register.*
 
