@@ -19,7 +19,7 @@ sudo apt install -y postgresql
 
 echo ================= install stork server =================
 
-# curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/cfg/setup/bash.deb.sh' | sudo bash
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/cfg/setup/bash.deb.sh' | sudo bash
 
 sudo apt install -y isc-stork-server
 
