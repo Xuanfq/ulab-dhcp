@@ -7,6 +7,8 @@
 
 echo ================= install stork agent =================
 
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/cfg/setup/bash.deb.sh' | sudo bash
+
 sudo apt install isc-stork-agent
 
 

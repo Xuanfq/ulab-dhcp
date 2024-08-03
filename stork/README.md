@@ -124,12 +124,27 @@ username/password: admin/admin
 ### Install Stork Agent
 
 - Installing on Debian/Ubuntu
+The first step for both Debian and Ubuntu is:
+
+```bash
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/cfg/setup/bash.deb.sh' | sudo bash
+```
+
+Next, install the Stork Agent package:
 
 ```bash
 sudo apt install isc-stork-agent
 ```
 
 - Installing on CentOS/RHEL/Fedora
+
+The first step for RPM-based distributions is:
+
+```bash
+curl -1sLf 'https://dl.cloudsmith.io/public/isc/stork/cfg/setup/bash.rpm.sh' | sudo bash
+```
+
+Next, install the Stork Agent package:
 
 ```bash
 sudo dnf install isc-stork-agent
