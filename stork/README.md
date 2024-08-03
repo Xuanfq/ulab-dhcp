@@ -174,6 +174,8 @@ Start Stork Agent:
 sudo systemctl restart isc-stork-agent
 ```
 
+Resolve the issue of ineffective configuration: https://stork.readthedocs.io/en/latest/troubleshooting.html
+
 ### Register to Stork Server
 
 ```bash
